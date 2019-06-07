@@ -3,9 +3,10 @@ import secrets
 from flask import render_template, url_for, flash, redirect, request
 from classwebapp import app, db, bcrypt
 from classwebapp.forms import StudentRegistrationForm, StudentLoginForm, LecturerRegistrationForm, LecturerLoginForm
-from classwebapp.models import Student, Lecturer
+from classwebapp.models import Student, Lecturer, Role, UserRole
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import roles_required
+
 
 @app.route('/')
 @app.route('/index') 
