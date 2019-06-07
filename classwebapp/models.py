@@ -36,7 +36,6 @@ class Lecturer(db.Model, UserMixin):
 class Role(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String(20), unique=False, nullable=False)
-    role = db.relationship('Role', backref='role', lazy='dynamic')
 
     def __repr__(self):
         return f"User('{self.role_id}')"
