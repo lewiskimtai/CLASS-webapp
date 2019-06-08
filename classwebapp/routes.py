@@ -2,8 +2,8 @@ import os
 import secrets
 from flask import render_template, url_for, flash, redirect, request
 from classwebapp import app, db, bcrypt
-from classwebapp.forms import StudentRegistrationForm, StudentLoginForm, LecturerRegistrationForm, LecturerLoginForm
-from classwebapp.models import Student, Lecturer, Role, UserRole
+from classwebapp.forms import StudentRegistrationForm, LoginForm, LecturerRegistrationForm
+from classwebapp.models import User, Role
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import roles_required
 
@@ -19,50 +19,21 @@ def student_register():
     form = StudentRegistrationForm()
     if form.validate_on_submit():
         student_hashed_password = bcrypt.generate_password_hash(form.student_password.data).decode('utf-8')
-        student = Student(student_name=form.student_name.data, student_email=form.student_email.data, student_password=student_hashed_password, active=False)
-        student.roles.append(Role(name='student'))
+        student = User(user_name=form.student_name.data, user_email=form.student_email.data, user_password=student_hashed_password)
+        student.role.append(Role(role='student'))
         db.session.add(student)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('student_home'))
+        return redirect(url_for('login'))
     return render_template('student_register.html', title='Student Registration', form=form)
-
-
-#@app.route('/CLASS_login', methods=['GET', 'POST']) 
-#def CLASS_login():
-#    student_form = StudentLoginForm()
-#    lecturer_form = LecturerLoginForm()
-#    if student_form.validate_on_submit():
-#        student = Student.query.filter_by(student_email=student_form.student_email.data).first()
-#        if student and bcrypt.check_password_hash(student.student_password, student_form.student_password.data):
-#            login_user(student, remember=student_form.remember.data)
-#            next_page = request.args.get('next')
-#            return redirect('next') if next_page else redirect(url_for('lecturer_home'))
-#        else:
-#            flash('Login Unsuccessful. Please check email and password', 'danger')
-#            return render_template('student_login.html', title='Student Login', form=student_form)
-#    else:
-#        lecturer_form.validate_on_submit()
-#        lecturer = Lecturer.query.filter_by(lecturer_email=lecturer_form.lecturer_email.data).first()
-#        if lecturer and bcrypt.check_password_hash(lecturer.lecturer_password, lecturer_form.lecturer_password.data):
-#            login_user(lecturer, remember=lecturer_form.remember.data)
-#            next_page = request.args.get('next')
-#            return redirect('next') if next_page else redirect(url_for('lecturer_home'))
-#        else:
-#            flash('Login Unsuccessful. Please check email and password', 'danger')
-#    return render_template('lecturer_login.html', title='Lecturer Login', form=lecturer_form)
-
-
-
-
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
-    form = StudentLoginForm()
+    form = LoginForm()
     if form.validate_on_submit():
-        student = Student.query.filter_by(student_email=form.student_email.data).first()
-        if student and bcrypt.check_password_hash(student.student_password, form.student_password.data):
-            login_user(student, remember=form.remember.data)
+        user = User.query.filter_by(user_email=form.user_email.data).first()
+        if user and bcrypt.check_password_hash(user.user_password, form.user_password.data):
+            login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('student_home'))
         else:
@@ -74,8 +45,8 @@ def lecturer_register():
     form = LecturerRegistrationForm()
     if form.validate_on_submit():
         lecturer_hashed_password = bcrypt.generate_password_hash(form.lecturer_password.data).decode('utf-8')
-        lecturer = Lecturer(lecturer_name=form.lecturer_name.data, lecturer_email=form.lecturer_email.data, lecturer_password=lecturer_hashed_password, active=True)
-        lecturer.roles.append(Role(name='lecturer'))
+        lecturer = Lecturer(lecturer_name=form.lecturer_name.data, lecturer_email=form.lecturer_email.data, lecturer_password=lecturer_hashed_password)
+        lecturer.role.append(Role(role='lecturer'))
         db.session.add(lecturer)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
