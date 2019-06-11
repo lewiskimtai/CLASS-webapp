@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-#from flask_user import UserManager, SQLAlchemyAdapter
+from flask_user import UserManager, EmailManager
 #from classwebapp.models import UserRole
 
 app = Flask(__name__)

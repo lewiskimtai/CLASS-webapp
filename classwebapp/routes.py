@@ -5,7 +5,10 @@ from classwebapp import app, db, bcrypt
 from classwebapp.forms import StudentRegistrationForm, LoginForm, LecturerRegistrationForm
 from classwebapp.models import User, Role
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_user import roles_required
+from flask_user import roles_required, UserManager, EmailManager
+
+user_manager = UserManager(app, db, Role)
+email_manager = EmailManager(app)
 
 
 @app.route('/')

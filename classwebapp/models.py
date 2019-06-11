@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     user_name = db.Column(db.String(20), unique=False, nullable=False)
     user_email = db.Column(db.String(120), unique=True, nullable=False)
     user_password = db.Column(db.String(60), nullable=False)
-    role = db.relationship('Role', backref='role', lazy='dynamic')
+    role = db.relationship('Role', backref='user', lazy='dynamic')
 
     def __repr__(self):
         return f"User('{self.user_name}', '{self.user_email}')"
